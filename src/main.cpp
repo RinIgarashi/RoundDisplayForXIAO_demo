@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-#include "round_display_pins.h"
+#include "pins.h"
+#include "chsc6x.h"
 
 Adafruit_GC9A01A tft(TFT_CS, TFT_DC);
 
@@ -19,6 +20,10 @@ unsigned long testTriangles();
 unsigned long testFilledTriangles();
 unsigned long testRoundRects();
 unsigned long testFilledRoundRects();
+
+// -------- -------- -------- --------
+// Setup
+// -------- -------- -------- --------
 
 void setup() {
   Serial.begin(115200);
@@ -81,15 +86,33 @@ void setup() {
   delay(500);
 
   Serial.println(F("Done!"));
+  tft.fillScreen(GC9A01A_BLACK);
+
+  touch_begin();
 }
 
+// -------- -------- -------- --------
+// Loop
+// -------- -------- -------- --------
+
 void loop(void) {
-  for (uint8_t rotation = 0; rotation < 4; rotation++) {
-    tft.setRotation(rotation);
-    testText();
-    delay(1000);
+  if (chsc6x_is_pressed()) {
+    uint8_t x, y;
+    chsc6x_get_xy(&x, &y);
+    // Serial.printf("x: %d, y: %d\n", x, y);
+    tft.setCursor(80, 104);
+    tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+    tft.setTextSize(2);
+    tft.printf("x:%3d", x);
+    tft.setCursor(80, 120);
+    tft.printf("y:%3d", y);
+    tft.fillCircle(x, y, 10, GC9A01A_ORANGE);
   }
 }
+
+// -------- -------- -------- --------
+// Screen Drawing Test Function
+// -------- -------- -------- --------
 
 unsigned long testFillScreen() {
   unsigned long start = micros();
