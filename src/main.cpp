@@ -34,7 +34,7 @@ void setup() {
 #if defined(TFT_BL)
   pinMode(TFT_BL, OUTPUT);
   digitalWrite(TFT_BL, HIGH);  // Backlight on
-#endif                         // end TFT_BL
+#endif
 
   Serial.println(F("Benchmark                Time (microseconds)"));
   delay(10);
@@ -89,6 +89,11 @@ void setup() {
   tft.fillScreen(GC9A01A_BLACK);
 
   touch_begin();
+
+  tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
+  tft.setTextSize(2);
+  tft.setCursor(80, 104);
+  tft.printf("Touch");
 }
 
 // -------- -------- -------- --------
@@ -101,12 +106,10 @@ void loop(void) {
     chsc6x_get_xy(&x, &y);
     // Serial.printf("x: %d, y: %d\n", x, y);
     tft.setCursor(80, 104);
-    tft.setTextColor(GC9A01A_WHITE, GC9A01A_BLACK);
-    tft.setTextSize(2);
     tft.printf("x:%3d", x);
     tft.setCursor(80, 120);
     tft.printf("y:%3d", y);
-    tft.fillCircle(x, y, 10, GC9A01A_ORANGE);
+    tft.fillCircle(x, y, 5, GC9A01A_ORANGE);
   }
 }
 
